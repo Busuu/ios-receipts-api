@@ -54,7 +54,7 @@ class ValidatorService
      * @return int
      * @throws \Exception
      */
-    public function validateReceipt(array $receiptInfo) :int
+    public function validateReceipt(array $receiptInfo)
     {
         // Status is the only mandatory field
         if (!isset($receiptInfo['status'])) {

@@ -19,7 +19,7 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
      * @param int $statusCode
      * @param int $returnCode
      */
-    public function testValidateReceiptSuccessCode(int $statusCode, int $returnCode)
+    public function testValidateReceiptSuccessCode($statusCode, $returnCode)
     {
         $data = [
             'status' => $statusCode,
@@ -36,7 +36,7 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
      *
      * @param int $statusCode
      */
-    public function testValidateReceiptInvalidCode(int $statusCode)
+    public function testValidateReceiptInvalidCode($statusCode)
     {
         $data = [
             'status' => $statusCode,
@@ -53,7 +53,7 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
      *
      * @param int $statusCode
      */
-    public function testValidateReceiptPanicCode(int $statusCode)
+    public function testValidateReceiptPanicCode($statusCode)
     {
         $data = [
             'status' => $statusCode,
@@ -70,7 +70,7 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
      *
      * @return array
      */
-    public function validCodesProvider() :array
+    public function validCodesProvider()
     {
         return [
             [0 , 1],
@@ -85,7 +85,7 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
      *
      * @return array
      */
-    public function invalidRequestCodesProvider() :array
+    public function invalidRequestCodesProvider()
     {
         return [
             [21000],
@@ -100,7 +100,7 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
      *
      * @return array
      */
-    public function panicRequestCodesProvider() :array
+    public function panicRequestCodesProvider()
     {
         return [
             [21005],

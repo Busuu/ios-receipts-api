@@ -62,7 +62,7 @@ class ReceiptService
      * @param $receiptData
      * @return array
      */
-    private function getReceipt(string $receiptData) :array
+    private function getReceipt($receiptData)
     {
         // Fetch the receipt from production store
         $appleEndpoint = $this->getAppleEndpoint();
@@ -150,7 +150,7 @@ class ReceiptService
      * @param array $latestReceiptData
      * @return array|mixed
      */
-    private function searchLatestPurchase(array $purchasesList, array $latestReceiptData = []) :array
+    private function searchLatestPurchase(array $purchasesList, array $latestReceiptData = [])
     {
         if (!empty($purchasesList)) {
             // Loop in all the users receipt to get the latest receipt

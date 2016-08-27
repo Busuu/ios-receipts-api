@@ -11,7 +11,7 @@ class AppleClient
     /** @var  string */
     private $password;
 
-    public function __construct(Client $client, string $password)
+    public function __construct(Client $client, $password)
     {
         $this->client = $client;
         $this->password = $password;
@@ -24,7 +24,7 @@ class AppleClient
      * @param $endpoint
      * @return array
      */
-    public function fetchReceipt($receiptData, $endpoint) :array
+    public function fetchReceipt($receiptData, $endpoint)
     {
         try {
             $data = [
