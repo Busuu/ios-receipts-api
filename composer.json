@@ -1,0 +1,12 @@
+{
+  "name": "busuu/ios-payments",
+  "license": "proprietary",
+  "type": "project",
+  "require": {
+    "php": ">=5.4",
+    "guzzlehttp/guzzle": "6.0.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.8"
+  }
+}
