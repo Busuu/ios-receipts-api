@@ -20,7 +20,7 @@ class ReceiptService
 
     /**
      * ReceiptService constructor.
-     * @param string password
+     * @param string $password
      * @param string $environment
      */
     public function __construct($password, $environment = self::PRODUCTION_ENVIRONMENT)
@@ -34,7 +34,7 @@ class ReceiptService
      * @param string $receiptData
      * @return array
      */
-    public function getFullReceipt(string $receiptData) :array
+    public function getFullReceipt($receiptData)
     {
         return $this->getReceipt($receiptData);
     }
@@ -69,7 +69,10 @@ class ReceiptService
         $result = $this->appleClient->fetchReceipt($receiptData, $appleEndpoint);
         $status = $this->validatorService->validateReceipt($result);
 
-        // If Apple returns this code, it means that the receipt should be fetched from the sandbox store instead
+        /**
+         * As per Apple's advice, receipts should be first send to production environment, and if the "sandbox" response code is received, they should then sent to sandbox.
+         * This means that no configuration change is necessary for working in either environment.
+         */
         if ($status === ValidatorService::SANDBOX_REQUEST_RESPONSE) {
             $this->environment = self::SANDBOX_ENVIRONMENT;
             $appleEndpoint = $this->getAppleEndpoint();
