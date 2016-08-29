@@ -1,13 +1,13 @@
 # PHP IOS payments library
 
-A library to get information on user subscriptions from the App Store receipts API, as described in the [IOS documentation](https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html#//apple_ref/doc/uid/TP40010573-CH104-SW1). 
+A library to get information on auto-renewing subscriptions from the App Store receipts API, as described in the [IOS documentation](https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html#//apple_ref/doc/uid/TP40010573-CH104-SW1). 
 
 This is useful for:
-* maintaining on your server an up-to-date database of your IOS users' in-app subscriptions
-* giving cross-platform access to users based on an IOS purchase
+* maintaining on your server an up-to-date database of your IOS users' auto-renewing subscriptions
+* giving cross-platform access to users based on their IOS purchases
 * knowing the type of plans a user has subscribed to, when is the plan expiration date, has the user requested a cancellation of the subscription 
 
-To retrieve informations about a user's purchases from the App store, a receipt for this user must be sent to the App store. This receipt is stored as a file on the user's device. This receipt must then be sent from the IOS device to your server and stored by you, so that it can be used to retrieve the user's purchases afterward.
+To retrieve information about a user's purchases from the App store, a receipt for this user must be sent to the App store. This receipt is stored as a file on the user's device. This receipt must then be sent from the IOS device to your server and stored by you, so that it can be used to retrieve the user's purchases afterward.
 
 
 ## Features
