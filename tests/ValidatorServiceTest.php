@@ -1,15 +1,19 @@
 <?php
+namespace Busuu\IosPayments\Tests;
 
+use Busuu\IosPayments\ValidatorService;
 
 class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testValidateReceiptMissingField()
     {
         $data = [];
 
-        $validator = new \IosReceiptValidatorBundle\Services\ValidatorService();
+        $validator = new ValidatorService();
 
-        $this->expectException(\InvalidArgumentException::class);
         $validator->validateReceipt($data);
     }
 
@@ -26,7 +30,7 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             'receipt' => []
         ];
 
-        $validator = new \IosReceiptValidatorBundle\Services\ValidatorService();
+        $validator = new ValidatorService();
 
         $this->assertEquals($returnCode, $validator->validateReceipt($data));
     }
@@ -35,6 +39,8 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
      * @dataProvider invalidRequestCodesProvider
      *
      * @param int $statusCode
+     *
+     * @expectedException \InvalidArgumentException
      */
     public function testValidateReceiptInvalidCode($statusCode)
     {
@@ -43,8 +49,7 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             'receipt' => []
         ];
 
-        $validator = new \IosReceiptValidatorBundle\Services\ValidatorService();
-        $this->expectException(\InvalidArgumentException::class);
+        $validator = new ValidatorService();
         $validator->validateReceipt($data);
     }
 
@@ -52,6 +57,8 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
      * @dataProvider panicRequestCodesProvider
      *
      * @param int $statusCode
+     *
+     * @expectedException \Exception
      */
     public function testValidateReceiptPanicCode($statusCode)
     {
@@ -60,8 +67,7 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             'receipt' => []
         ];
 
-        $validator = new \IosReceiptValidatorBundle\Services\ValidatorService();
-        $this->expectException(\Exception::class);
+        $validator = new ValidatorService();
         $validator->validateReceipt($data);
     }
 

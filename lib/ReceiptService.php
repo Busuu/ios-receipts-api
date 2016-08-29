@@ -1,8 +1,8 @@
 <?php
 
-namespace IosReceiptValidatorBundle\Services;
+namespace Busuu\IosPayments;
 
-use IosReceiptValidatorBundle\Model\AppStoreReceipt;
+use Busuu\IosPayments\Model\AppStoreReceipt;
 
 class ReceiptService
 {

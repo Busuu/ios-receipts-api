@@ -1,6 +1,6 @@
 <?php
 
-namespace IosReceiptValidatorBundle\Model;
+namespace Busuu\IosPayments\Model;
 
 class AppStoreReceipt
 {
