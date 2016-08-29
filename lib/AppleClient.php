@@ -11,9 +11,9 @@ class AppleClient
     /** @var  string */
     private $password;
 
-    public function __construct(Client $client, $password)
+    public function __construct($password)
     {
-        $this->client = $client;
+        $this->client = new Client();
         $this->password = $password;
     }
 
