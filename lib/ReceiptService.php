@@ -17,6 +17,10 @@ class ReceiptService
     private $appleClient;
     /** @var  ValidatorService $validatorService */
     private $validatorService;
+    /** @var  string base64-encoded receipt data */
+    private $receiptData;
+    /** @var array raw receipt received from the App store */
+    private $receipt;
 
     /**
      * ReceiptService constructor.
@@ -32,12 +36,38 @@ class ReceiptService
 
     /**
      * @param string $receiptData
+     * @return self
+     */
+    public function setReceiptData($receiptData)
+    {
+        $this->receiptData = $receiptData;
+
+        return $this;
+    }
+
+    /**
+     * Get array containing the full response from the App store
+     *
      * @return array
      */
-    public function getFullReceipt($receiptData)
+    public function getFullReceipt()
     {
-        return $this->getReceipt($receiptData);
+        if (!$this->receipt) {
+            $this->receipt =  $this->getReceipt();
+        }
+
+        return $this->receipt;
     }
+
+    public function getLastPurchase()
+    {
+        if (!$this->receipt) {
+            $this->receipt =  $this->getReceipt();
+        }
+
+        return $this->filterLastReceipt($this->receipt);
+    }
+
     /**
      * Method to choose the apple environment that we have to call
      *
@@ -58,15 +88,18 @@ class ReceiptService
 
     /**
      * Get receipt data from store
-     *
-     * @param $receiptData
      * @return array
+     * @throws \Exception
      */
-    private function getReceipt($receiptData)
+    private function getReceipt()
     {
+        if (!$this->receiptData) {
+            throw new \Exception('Receipt data not initialized on receipt service');
+        }
+
         // Fetch the receipt from production store
         $appleEndpoint = $this->getAppleEndpoint();
-        $result = $this->appleClient->fetchReceipt($receiptData, $appleEndpoint);
+        $result = $this->appleClient->fetchReceipt($this->receiptData, $appleEndpoint);
         $status = $this->validatorService->validateReceipt($result);
 
         /**
@@ -76,7 +109,7 @@ class ReceiptService
         if ($status === ValidatorService::SANDBOX_REQUEST_RESPONSE) {
             $this->environment = self::SANDBOX_ENVIRONMENT;
             $appleEndpoint = $this->getAppleEndpoint();
-            $result = $this->appleClient->fetchReceipt($receiptData, $appleEndpoint);
+            $result = $this->appleClient->fetchReceipt($this->receiptData, $appleEndpoint);
             $this->validatorService->validateReceipt($result);
             // Set the environment to production again
             $this->environment = self::PRODUCTION_ENVIRONMENT;
@@ -84,7 +117,7 @@ class ReceiptService
         } elseif ($status === ValidatorService::PRODUCTION_ENVIRONMENT_ERROR_CODE) {
             $this->environment = self::PRODUCTION_ENVIRONMENT;
             $appleEndpoint = $this->getAppleEndpoint();
-            $result = $this->appleClient->fetchReceipt($receiptData, $appleEndpoint);
+            $result = $this->appleClient->fetchReceipt($this->receiptData, $appleEndpoint);
             $this->validatorService->validateReceipt($result);
         }
 
@@ -97,7 +130,7 @@ class ReceiptService
      * @param array $userReceipt
      * @return AppStoreReceipt|null
      */
-    public function filterLastReceipt(array $userReceipt)
+    private function filterLastReceipt(array $userReceipt)
     {
         // The user does not have any purchase
         if (empty($userReceipt['receipt']['in_app']) && empty($userReceipt['latest_receipt_info'])) {
@@ -106,6 +139,11 @@ class ReceiptService
 
         $latestReceiptData = [];
         // The amazing apple is sending to us the information in different ways in every subscription and we should check both paces
+        /**
+         * The App store is sending back the purchases in two different fields, "in_app" and "latest_receipt_info". They usually have the same content.
+         * "latest_receipt_info" is deprecated but on some occasions returns purchases more recent than "in_app".
+         * For the time being we merge the 2 arrays and parse everything.
+         */
         $purchasesLists = array_merge($userReceipt['receipt']['in_app'], $userReceipt['latest_receipt_info']);
         $latestReceiptData = $this->searchLatestPurchase($purchasesLists, $latestReceiptData);
 
@@ -113,28 +151,7 @@ class ReceiptService
             return null;
         }
 
-        $latestReceipt = new AppStoreReceipt();
-
-        $cancellationTime = !empty($latestReceiptData['cancellation_date_ms']) ? $latestReceiptData['cancellation_date_ms'] : null;
-        $latestReceipt->setQuantity($latestReceiptData['quantity'])
-            ->setProductId($latestReceiptData['product_id'])
-            ->setTransactionId($latestReceiptData['transaction_id'])
-            ->setOriginalTransactionId($latestReceiptData['original_transaction_id'])
-            ->setPurchaseDate($latestReceiptData['purchase_date'])
-            ->setPurchaseDateMs($latestReceiptData['purchase_date_ms'])
-            ->setPurchaseDatePst($latestReceiptData['purchase_date_pst'])
-            ->setOriginalPurchaseDate($latestReceiptData['original_purchase_date'])
-            ->setOriginalPurchaseDateMs($latestReceiptData['original_purchase_date_ms'])
-            ->setOriginalPurchaseDatePst($latestReceiptData['original_purchase_date_pst'])
-            ->setExpiresDate($latestReceiptData['expires_date'])
-            ->setExpiresDateMs($latestReceiptData['expires_date_ms'])
-            ->setExpiresDatePst($latestReceiptData['expires_date_pst'])
-            ->setWebOrderLineItemId($latestReceiptData['web_order_line_item_id'])
-            ->setIsTrialPeriod($latestReceiptData['is_trial_period'])
-            ->setCancellationDateMs($cancellationTime)
-        ;
-
-        return $latestReceipt;
+        return $this->createAppStoreReceipt($latestReceiptData);
     }
 
     /**
@@ -167,5 +184,41 @@ class ReceiptService
         }
 
         return $latestReceiptData;
+    }
+
+    /**
+     * Create an AppStoreReceipt object from a single purchase returned by the App store
+     *
+     * @param array $storePurchase
+     * @return AppStoreReceipt|null
+     */
+    private function createAppStoreReceipt(array $storePurchase)
+    {
+        if (empty($storePurchase)) {
+            return null;
+        }
+
+        $receipt = new AppStoreReceipt();
+
+        $cancellationTime = !empty($storePurchase['cancellation_date_ms']) ? $storePurchase['cancellation_date_ms'] : null;
+        $receipt->setQuantity($storePurchase['quantity'])
+            ->setProductId($storePurchase['product_id'])
+            ->setTransactionId($storePurchase['transaction_id'])
+            ->setOriginalTransactionId($storePurchase['original_transaction_id'])
+            ->setPurchaseDate($storePurchase['purchase_date'])
+            ->setPurchaseDateMs($storePurchase['purchase_date_ms'])
+            ->setPurchaseDatePst($storePurchase['purchase_date_pst'])
+            ->setOriginalPurchaseDate($storePurchase['original_purchase_date'])
+            ->setOriginalPurchaseDateMs($storePurchase['original_purchase_date_ms'])
+            ->setOriginalPurchaseDatePst($storePurchase['original_purchase_date_pst'])
+            ->setExpiresDate($storePurchase['expires_date'])
+            ->setExpiresDateMs($storePurchase['expires_date_ms'])
+            ->setExpiresDatePst($storePurchase['expires_date_pst'])
+            ->setWebOrderLineItemId($storePurchase['web_order_line_item_id'])
+            ->setIsTrialPeriod($storePurchase['is_trial_period'])
+            ->setCancellationDateMs($cancellationTime)
+        ;
+
+        return $receipt;
     }
 }
