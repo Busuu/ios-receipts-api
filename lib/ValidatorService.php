@@ -1,9 +1,7 @@
 <?php
 
-namespace Busuu\IosPayments;
+namespace Busuu\IosReceiptsApi;
 
-use CommonBundle\Exception\ApiHttpException;
-use CommonBundle\Exception\ApiInvalidArgumentException;
 
 /**
  * You can see the apple response documentation here: https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html#//apple_ref/doc/uid/TP40010573-CH104-SW1

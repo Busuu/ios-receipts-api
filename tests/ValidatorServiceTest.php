@@ -1,7 +1,7 @@
 <?php
-namespace Busuu\IosPayments\Tests;
+namespace Busuu\IosReceiptsApi\Tests;
 
-use Busuu\IosPayments\ValidatorService;
+use Busuu\IosReceiptsApi\ValidatorService;
 
 class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
 {

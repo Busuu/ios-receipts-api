@@ -1,6 +1,6 @@
 <?php
 
-namespace Busuu\IosPayments\Model;
+namespace Busuu\IosReceiptsApi\Model;
 
 class AppStoreReceipt
 {

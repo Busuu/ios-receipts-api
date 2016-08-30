@@ -1,6 +1,6 @@
 {
-  "name": "busuu/ios-payments",
-  "license": "proprietary",
+  "name": "busuu/ios-receipts-api",
+  "license": "MIT",
   "type": "project",
   "require": {
     "php": ">=5.5",
@@ -10,6 +10,6 @@
     "phpunit/phpunit": "^4.8"
   },
   "autoload": {
-    "psr-4": { "Busuu\\IosPayments\\": "lib/" }
+    "psr-4": { "Busuu\\IosReceiptsApi\\": "lib/" }
   }
 }
