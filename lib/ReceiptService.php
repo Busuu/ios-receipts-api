@@ -59,6 +59,12 @@ class ReceiptService
         return $this->receipt;
     }
 
+    /**
+     * Get AppStoreReceipt object with the last purchase made for the user
+     *
+     * @return AppStoreReceipt|null
+     * @throws \Exception
+     */
     public function getLastPurchase()
     {
         if (!$this->receipt) {
@@ -138,7 +144,6 @@ class ReceiptService
         }
 
         $latestReceiptData = [];
-        // The amazing apple is sending to us the information in different ways in every subscription and we should check both paces
         /**
          * The App store is sending back the purchases in two different fields, "in_app" and "latest_receipt_info". They usually have the same content.
          * "latest_receipt_info" is deprecated but on some occasions returns purchases more recent than "in_app".
