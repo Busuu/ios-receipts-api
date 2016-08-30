@@ -34,7 +34,7 @@ $ curl -sS https://getcomposer.org/installer | php
 
 Then install this library with:
 ```bash
-$ php composer.phar require busuu/ios-payments
+$ php composer.phar require busuu/ios-receipts-api
 ```
 
 Or edit `composer.json` and add:
@@ -42,7 +42,7 @@ Or edit `composer.json` and add:
 ```json
 {
     "require": {
-        "busuu/ios-payments": "~1.0"
+        "busuu/ios-receipts-api": "~1.0"
     }
 }
 ```
