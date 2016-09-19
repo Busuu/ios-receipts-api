@@ -1,6 +1,6 @@
 <?php
 
-namespace Busuu\IosReceiptsApi;
+namespace IosReceiptsApi;
 
 use GuzzleHttp\Client;
 
