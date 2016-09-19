@@ -1,6 +1,6 @@
 <?php
 
-namespace IosReceiptValidatorBundle\Services;
+namespace Busuu\IosReceiptsApi;
 
 use GuzzleHttp\Client;
 

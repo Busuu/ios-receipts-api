@@ -3,7 +3,6 @@
 namespace Busuu\IosReceiptsApi;
 
 use Busuu\IosReceiptsApi\Model\AppStoreReceipt;
-use IosReceiptValidatorBundle\Services\AppleClient;
 
 class ReceiptService
 {

@@ -2,12 +2,11 @@
 
 namespace Busuu\IosReceiptsApi;
 
-
 /**
  * You can see the apple response documentation here: https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html#//apple_ref/doc/uid/TP40010573-CH104-SW1
  *
  * Class ValidatorService
- * @package IosReceiptValidatorBundle\Services
+ * @package Busuu\IosReceiptsApi
  */
 class ValidatorService
 {
