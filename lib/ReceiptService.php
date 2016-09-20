@@ -148,16 +148,10 @@ class ReceiptService
          * "latest_receipt_info" is deprecated but on some occasions returns purchases more recent than "in_app".
          * For the time being we merge the 2 arrays and parse everything.
          */
-        if (!empty($userReceipt['latest_receipt_info']) && !empty($userReceipt['receipt']['in_app'])) {
-            $purchasesLists = array_merge($userReceipt['receipt']['in_app'], $userReceipt['latest_receipt_info']);
-        } elseif (!empty($userReceipt['latest_receipt_info'])) {
-            $purchasesLists = $userReceipt['latest_receipt_info'];
-        } elseif (!empty($userReceipt['receipt']['in_app'])) {
-            $purchasesLists = $userReceipt['receipt']['in_app'];
-        } else {
-            return null;
-        }
-
+        $latestReceiptInfo = empty($userReceipt['latest_receipt_info']) ? [] : $userReceipt['latest_receipt_info'];
+        $receiptInApp = empty($userReceipt['receipt']['in_app']) ? [] : $userReceipt['receipt']['in_app'];
+        $purchasesLists = array_merge($latestReceiptInfo, $receiptInApp);
+        
         $latestReceiptData = $this->searchLatestPurchase($purchasesLists, $latestReceiptData);
 
         if (empty($latestReceiptData)) {
