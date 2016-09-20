@@ -3,7 +3,6 @@
 namespace Busuu\IosReceiptsApi;
 
 use Busuu\IosReceiptsApi\Model\AppStoreReceipt;
-use IosReceiptValidatorBundle\Services\AppleClient;
 
 class ReceiptService
 {
@@ -149,7 +148,10 @@ class ReceiptService
          * "latest_receipt_info" is deprecated but on some occasions returns purchases more recent than "in_app".
          * For the time being we merge the 2 arrays and parse everything.
          */
-        $purchasesLists = array_merge($userReceipt['receipt']['in_app'], $userReceipt['latest_receipt_info']);
+        $latestReceiptInfo = empty($userReceipt['latest_receipt_info']) ? [] : $userReceipt['latest_receipt_info'];
+        $receiptInApp = empty($userReceipt['receipt']['in_app']) ? [] : $userReceipt['receipt']['in_app'];
+        $purchasesLists = array_merge($latestReceiptInfo, $receiptInApp);
+        
         $latestReceiptData = $this->searchLatestPurchase($purchasesLists, $latestReceiptData);
 
         if (empty($latestReceiptData)) {
