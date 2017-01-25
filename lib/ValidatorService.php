@@ -34,9 +34,12 @@ class ValidatorService
     const INVALID_CREDENTIALS_ERROR_CODE = 21004;
     // The receipt server is not currently available.
     const RECEIPT_SERVER_DOWN_ERROR_CODE = 21005;
-    // This code is not shown in the documentation but users reported it in the forum without any official reply
-    // We will treat it as a receipt server error
-    // https://forums.developer.apple.com/thread/42678
+
+    /*
+     * This code is not shown in the documentation but users reported it in the forum without any official reply
+     * We will treat it as a receipt server error
+     * https://forums.developer.apple.com/thread/42678
+     */
     const RECEIPT_SERVER_UNKOWN_ERROR_CODE = 21009;
     /*
      * This receipt is valid but the subscription has expired. When this status code is returned to your server, the receipt data is also decoded and returned as part of the response.
