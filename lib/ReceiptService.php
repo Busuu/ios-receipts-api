@@ -207,6 +207,8 @@ class ReceiptService
 
         $receipt = new AppStoreReceipt();
 
+        // web_order_line_item_id key is defined as mandatory by apple documentation but sometime is not returned.
+        $webOrderLineItemId = array_key_exists('web_order_line_item_id', $storePurchase) ? $storePurchase['web_order_line_item_id'] : null;
         $cancellationTime = !empty($storePurchase['cancellation_date_ms']) ? $storePurchase['cancellation_date_ms'] : null;
         $receipt->setQuantity($storePurchase['quantity'])
             ->setProductId($storePurchase['product_id'])
@@ -221,7 +223,7 @@ class ReceiptService
             ->setExpiresDate($storePurchase['expires_date'])
             ->setExpiresDateMs($storePurchase['expires_date_ms'])
             ->setExpiresDatePst($storePurchase['expires_date_pst'])
-            ->setWebOrderLineItemId($storePurchase['web_order_line_item_id'])
+            ->setWebOrderLineItemId($webOrderLineItemId)
             ->setIsTrialPeriod($storePurchase['is_trial_period'])
             ->setCancellationDateMs($cancellationTime)
         ;
