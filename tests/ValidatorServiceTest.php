@@ -50,12 +50,19 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             'receipt' => []
         ];
 
+        $exceptionThrown = false;
+
         try {
             $validator = new ValidatorService();
             $validator->validateReceipt($data);
         } catch(\Exception $e) {
             $this->assertInstanceOf(InvalidReceiptException::class, $e);
             $this->assertEquals($statusCode, $e->getCode());
+            $exceptionThrown = true;
+        } finally {
+            if (!$exceptionThrown) {
+                throw new \RuntimeException('No exception was thrown');
+            }
         }
     }
 
