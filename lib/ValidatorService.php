@@ -2,7 +2,7 @@
 
 namespace Busuu\IosReceiptsApi;
 
-use Busuu\IosReceiptsApi\Exception\ReceiptException;
+use Busuu\IosReceiptsApi\Exception\InvalidReceiptException;
 
 /**
  * You can see the apple response documentation here: https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html#//apple_ref/doc/uid/TP40010573-CH104-SW1
@@ -65,7 +65,7 @@ class ValidatorService
     {
         // Status is the only mandatory field
         if (!isset($receiptInfo['status'])) {
-            throw new ReceiptException('The receipt sent by Apple is incorrect');
+            throw new InvalidReceiptException('The receipt sent by Apple is incorrect');
         }
 
         switch ($receiptInfo['status']) {
@@ -80,23 +80,23 @@ class ValidatorService
                 $return = self::SUCCESS_VALIDATION_RESPONSE;
                 break;
             case self::INVALID_REQUEST_JSON_ERROR_CODE:
-                throw new ReceiptException('The App Store could not read the JSON object you provided.', $receiptInfo['status']);
+                throw new InvalidReceiptException('The App Store could not read the JSON object you provided.', $receiptInfo['status']);
                 break;
             case self::MALFORMED_RECEIPT_DATA_ERROR_CODE:
-                throw new ReceiptException('The data in the receipt-data property was malformed or missing.', $receiptInfo['status']);
+                throw new InvalidReceiptException('The data in the receipt-data property was malformed or missing.', $receiptInfo['status']);
                 break;
             case self::RECEIPT_NOT_AUTHENTICATE_ERROR_CODE:
-                throw new ReceiptException('The receipt could not be authenticated.', $receiptInfo['status']);
+                throw new InvalidReceiptException('The receipt could not be authenticated.', $receiptInfo['status']);
                 break;
             case self::INVALID_CREDENTIALS_ERROR_CODE:
-                throw new ReceiptException('The shared secret you provided does not match the shared secret on file for your account.', $receiptInfo['status']);
+                throw new InvalidReceiptException('The shared secret you provided does not match the shared secret on file for your account.', $receiptInfo['status']);
                 break;
             case self::RECEIPT_SERVER_DOWN_ERROR_CODE:
             case self::RECEIPT_SERVER_UNKOWN_ERROR_CODE:
-                throw new ReceiptException('The receipt server is not currently available.', $receiptInfo['status']);
+                throw new InvalidReceiptException('The receipt server is not currently available.', $receiptInfo['status']);
                 break;
             default:
-                throw new ReceiptException('The receipt does not contain a valid status.', $receiptInfo['status']);
+                throw new InvalidReceiptException('The receipt does not contain a valid status.', $receiptInfo['status']);
                 break;
         }
 

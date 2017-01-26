@@ -1,12 +1,14 @@
 <?php
 namespace Busuu\IosReceiptsApi\Tests;
 
+use Busuu\IosReceiptsApi\Exception\InvalidReceiptException;
 use Busuu\IosReceiptsApi\ValidatorService;
 
 class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Busuu\IosReceiptsApi\Exception\InvalidReceiptException
+     * @expectedExceptionCode 0
      */
     public function testValidateReceiptMissingField()
     {
@@ -40,7 +42,6 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
      *
      * @param int $statusCode
      *
-     * @expectedException \InvalidArgumentException
      */
     public function testValidateReceiptInvalidCode($statusCode)
     {
@@ -49,27 +50,22 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             'receipt' => []
         ];
 
-        $validator = new ValidatorService();
-        $validator->validateReceipt($data);
+        $exceptionThrown = false;
+
+        try {
+            $validator = new ValidatorService();
+            $validator->validateReceipt($data);
+        } catch(\Exception $e) {
+            $this->assertInstanceOf(InvalidReceiptException::class, $e);
+            $this->assertEquals($statusCode, $e->getCode());
+            $exceptionThrown = true;
+        } finally {
+            if (!$exceptionThrown) {
+                throw new \RuntimeException('No exception was thrown');
+            }
+        }
     }
 
-    /**
-     * @dataProvider panicRequestCodesProvider
-     *
-     * @param int $statusCode
-     *
-     * @expectedException \Exception
-     */
-    public function testValidateReceiptPanicCode($statusCode)
-    {
-        $data = [
-            'status' => $statusCode,
-            'receipt' => []
-        ];
-
-        $validator = new ValidatorService();
-        $validator->validateReceipt($data);
-    }
 
     /**
      * ["store status code", "validator response code"]
@@ -98,17 +94,6 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             [21002],
             [21003],
             [21004],
-        ];
-    }
-
-    /**
-     * ["store status code"]
-     *
-     * @return array
-     */
-    public function panicRequestCodesProvider()
-    {
-        return [
             [21005],
             [12345],
         ];
