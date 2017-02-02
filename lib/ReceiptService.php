@@ -23,13 +23,14 @@ class ReceiptService
 
     /**
      * ReceiptService constructor.
-     * @param string $password
+     * @param AppleClient $appleClient
+     * @param ValidatorService $validatorService
      * @param string $environment
      */
-    public function __construct($password, $environment = self::PRODUCTION_ENVIRONMENT)
+    public function __construct(AppleClient $appleClient, ValidatorService $validatorService, $environment = self::PRODUCTION_ENVIRONMENT)
     {
-        $this->appleClient = new AppleClient($password);
-        $this->validatorService = new ValidatorService();
+        $this->appleClient = $appleClient;
+        $this->validatorService = $validatorService;
         $this->environment = $environment;
     }
 
