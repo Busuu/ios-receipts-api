@@ -183,7 +183,7 @@ class ReceiptService
         if (!empty($purchasesList)) {
             // Loop in all the users receipt to get the latest receipt
             foreach ($purchasesList as $key => $value) {
-                if (empty($latestReceiptData['original_purchase_date_ms']) || $latestReceiptData['original_purchase_date_ms'] < $value['original_purchase_date_ms']) {
+                if (empty($latestReceiptData['purchase_date_ms']) || $latestReceiptData['purchase_date_ms'] < $value['purchase_date_ms']) {
                     $latestReceiptData = $value;
                 }
             }
