@@ -210,14 +210,18 @@ class ReceiptService
 
         // web_order_line_item_id key is defined as mandatory by apple documentation but sometime is not returned.
         $webOrderLineItemId = !empty($storePurchase['web_order_line_item_id']) ? $storePurchase['web_order_line_item_id'] : null;
+        // cancellation_date_ms is returned just if the user cancel the subscription an was refund immediately
         $cancellationTime = !empty($storePurchase['cancellation_date_ms']) ? $storePurchase['cancellation_date_ms'] : null;
+        // purchase_date_pst just discovered that some times isn't coming either
+        $purchaseDatePst = !empty($storePurchase['purchase_date_pst']) ? $storePurchase['purchase_date_pst'] : null;
+
         $receipt->setQuantity($storePurchase['quantity'])
             ->setProductId($storePurchase['product_id'])
             ->setTransactionId($storePurchase['transaction_id'])
             ->setOriginalTransactionId($storePurchase['original_transaction_id'])
             ->setPurchaseDate($storePurchase['purchase_date'])
             ->setPurchaseDateMs($storePurchase['purchase_date_ms'])
-            ->setPurchaseDatePst($storePurchase['purchase_date_pst'])
+            ->setPurchaseDatePst($purchaseDatePst)
             ->setOriginalPurchaseDate($storePurchase['original_purchase_date'])
             ->setOriginalPurchaseDateMs($storePurchase['original_purchase_date_ms'])
             ->setOriginalPurchaseDatePst($storePurchase['original_purchase_date_pst'])
