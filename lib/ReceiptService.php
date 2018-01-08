@@ -75,6 +75,18 @@ class ReceiptService
     }
 
     /**
+     * Get the last purchase made for the user from a given full App Store receipt.
+     *
+     * @param array $fullReceipt
+     *
+     * @return AppStoreReceipt|null
+     */
+    public function getLastPurchaseFromFullReceipt(array $fullReceipt)
+    {
+        return $this->filterLastReceipt($fullReceipt);
+    }
+
+    /**
      * Method to choose the apple environment that we have to call
      *
      * @return string
