@@ -37,7 +37,12 @@ class AppleHelper
     }
 
     /**
-     * Returns a store receipt array with multiple subscriptions (within 'in_app' and 'latest_receipt_info')
+     * Returns a store receipt array with multiple subscriptions (within 'in_app' and 'latest_receipt_info').
+     *
+     * Within 'latest_receipt_info', there are 2 subscriptions - the differences being in the following keys:
+     *
+     *  - transaction_id, purchase_date, purchase_date_ms, purchase_date_pst, expires_date, expires_date_ms,
+     *      expires_date_pst and web_order_line_item_id.
      */
     public function getStoreReceiptMultipleSubscriptions()
     {
