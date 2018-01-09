@@ -81,4 +81,32 @@ class ReceiptServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($storeReceipt);
     }
+
+    public function testGetLastPurchaseFromFullReceipt_emptyFullReceipt_shouldReturnNull()
+    {
+        // GIVEN
+        $helper = new AppleHelper();
+        $fullReceipt = $helper->getStoreReceiptDataNoPurchase();
+
+        // WHEN / THEN
+        $this->assertNull($this->receiptService->getLastPurchaseFromFullReceipt($fullReceipt));
+    }
+
+    public function testGetLastPurchaseFromFullReceipt_shouldReturnLastPurchaseAsAppStoreReceipt()
+    {
+        // GIVEN
+        $helper = new AppleHelper();
+        $fullReceipt = $helper->getStoreReceiptMultipleSubscriptions();
+
+        // WHEN / THEN
+        $result = $this->receiptService->getLastPurchaseFromFullReceipt($fullReceipt);
+
+        $this->assertInstanceOf(AppStoreReceipt::class, $result);
+
+        //Checking for the latest receipt details as within $fullReceipt.
+        $this->assertEquals('com.busuu.app.subs1monthoptionC.switzerland', $result->getProductId());
+        $this->assertEquals('140000164971107', $result->getOriginalTransactionId());
+        $this->assertEquals('1450006697000', $result->getExpiresDateMs());
+        $this->assertEquals('1447414697000', $result->getPurchaseDateMs());
+    }
 }
