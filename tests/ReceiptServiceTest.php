@@ -112,7 +112,7 @@ class ReceiptServiceTest extends \PHPUnit_Framework_TestCase
         //Checking for the latest receipt details as within $fullReceipt.
         $this->assertEquals('com.busuu.app.subs1monthoptionC.switzerland', $result->getProductId());
         $this->assertEquals('140000164971107', $result->getOriginalTransactionId());
-        $this->assertEquals('1450006697000', $result->getExpiresDateMs());
-        $this->assertEquals('1447414697000', $result->getPurchaseDateMs());
+        $this->assertEquals('1447414697000', $result->getExpiresDateMs());
+        $this->assertEquals('1444732702000', $result->getOriginalPurchaseDateMs());
     }
 }
