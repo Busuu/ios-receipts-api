@@ -28,6 +28,9 @@ class ReceiptServiceTest extends \PHPUnit_Framework_TestCase
         $this->receiptService = new ReceiptService($this->appleClient, $this->validatorService, ReceiptService::PRODUCTION_ENVIRONMENT);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testGetLastReceiptSuccess()
     {
         $helper = new AppleHelper();
@@ -53,10 +56,13 @@ class ReceiptServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(AppStoreReceipt::class, $storeReceipt);
         $this->assertEquals($storeReceiptData['receipt']['in_app'][0]['original_transaction_id'], $storeReceipt->getOriginalTransactionId());
         $this->assertEquals($storeReceiptData['receipt']['in_app'][0]['expires_date_ms'], $storeReceipt->getExpiresDateMs());
-        $this->assertEquals($storeReceiptData['receipt']['in_app'][0]['purchase_date_ms'], $storeReceipt->getPurchaseDateMs());
+        $this->assertEquals($storeReceiptData['receipt']['in_app'][0]['original_purchase_date_ms'], $storeReceipt->getOriginalPurchaseDateMs());
         $this->assertEquals($storeReceiptData['receipt']['in_app'][0]['product_id'], $storeReceipt->getProductId());
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testGetLastReceiptNoPurchase()
     {
         $helper = new AppleHelper();
