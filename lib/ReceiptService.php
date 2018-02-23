@@ -49,6 +49,7 @@ class ReceiptService
      * Get array containing the full response from the App store
      *
      * @return array
+     * @throws \Exception
      */
     public function getFullReceipt()
     {
@@ -195,7 +196,7 @@ class ReceiptService
         if (!empty($purchasesList)) {
             // Loop in all the users receipt to get the latest receipt
             foreach ($purchasesList as $key => $value) {
-                if (empty($latestReceiptData['purchase_date_ms']) || $latestReceiptData['purchase_date_ms'] < $value['purchase_date_ms']) {
+                if (empty($latestReceiptData['original_purchase_date_ms']) || $latestReceiptData['original_purchase_date_ms'] < $value['original_purchase_date_ms']) {
                     $latestReceiptData = $value;
                 }
             }
