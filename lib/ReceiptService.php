@@ -226,7 +226,8 @@ class ReceiptService
         $cancellationTime = !empty($storePurchase['cancellation_date_ms']) ? $storePurchase['cancellation_date_ms'] : null;
         // purchase_date_pst just discovered that some times isn't coming either
         $purchaseDatePst = !empty($storePurchase['purchase_date_pst']) ? $storePurchase['purchase_date_pst'] : null;
-        // expires_date_pst / expires_date_ms not always present
+        // expires_at, expires_date_pst + expires_date_ms not always present (older purchases)
+        $expiresDate = !empty($storePurchase['expires_date']) ? $storePurchase['expires_date'] : null;
         $expiresDatePst = !empty($storePurchase['expires_date_pst']) ? $storePurchase['expires_date_pst'] : null;
         $expiresDateMs = !empty($storePurchase['expires_date_ms']) ? $storePurchase['expires_date_ms'] : null;
 
@@ -240,7 +241,7 @@ class ReceiptService
             ->setOriginalPurchaseDate($storePurchase['original_purchase_date'])
             ->setOriginalPurchaseDateMs($storePurchase['original_purchase_date_ms'])
             ->setOriginalPurchaseDatePst($storePurchase['original_purchase_date_pst'])
-            ->setExpiresDate($storePurchase['expires_date'])
+            ->setExpiresDate($expiresDate)
             ->setExpiresDateMs($expiresDateMs)
             ->setExpiresDatePst($expiresDatePst)
             ->setWebOrderLineItemId($webOrderLineItemId)
