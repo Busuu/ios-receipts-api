@@ -3,6 +3,7 @@
 namespace Busuu\IosReceiptsApi;
 
 use Busuu\IosReceiptsApi\Exception\InvalidReceiptException;
+use Busuu\IosReceiptsApi\Exception\UnauthorizedReceiptException;
 
 /**
  * You can see the apple response documentation here: https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html#//apple_ref/doc/uid/TP40010573-CH104-SW1
@@ -46,6 +47,13 @@ class ValidatorService
      * Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
      */
     const EXPIRED_SUBSCRIPTION_CODE = 21006;
+
+    /*
+     * "This receipt could not be authorized. Treat this the same as if a purchase was never made."
+     * Unclear what causes this, but we're seeing it on some receipts.
+     */
+    const UNAUTHORIZED_RECEIPT = 21010;
+
     // 0 if the receipt is valid
     const SUCCESS_RECEIPT_CODE = 0;
 
@@ -78,6 +86,9 @@ class ValidatorService
             case self::EXPIRED_SUBSCRIPTION_CODE:
             case self::SUCCESS_RECEIPT_CODE:
                 $return = self::SUCCESS_VALIDATION_RESPONSE;
+                break;
+            case self::UNAUTHORIZED_RECEIPT:
+                throw new UnauthorizedReceiptException('This receipt could not be authorized. Treat this the same as if a purchase was never made.', $receiptInfo['status']);
                 break;
             case self::INVALID_REQUEST_JSON_ERROR_CODE:
                 throw new InvalidReceiptException('The App Store could not read the JSON object you provided.', $receiptInfo['status']);
