@@ -155,17 +155,23 @@ class ReceiptService
             return null;
         }
 
-        $latestReceiptData = [];
         /**
-         * The App store is sending back the purchases in two different fields, "in_app" and "latest_receipt_info". They usually have the same content.
-         * "latest_receipt_info" is deprecated but on some occasions returns purchases more recent than "in_app".
-         * For the time being we merge the 2 arrays and parse everything.
+         * Only returned for receipts containing auto-renewable subscriptions.
+         * For iOS 6 style transaction receipts, this is the JSON representation of the receipt for the most recent renewal.
+         * For iOS 7 style app receipts, the value of this key is an array containing all in-app purchase transactions.
+         * This excludes transactions for a consumable product that have been marked as finished by your app.
+         * @see https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html
          */
         $latestReceiptInfo = empty($userReceipt['latest_receipt_info']) ? [] : $userReceipt['latest_receipt_info'];
+        /**
+         * In the JSON file, the value of this key is an array containing all in-app purchase receipts based on the in-app purchase transactions present in the input base-64 receipt-data.
+         * For receipts containing auto-renewable subscriptions, check the value of the latest_receipt_info key to get the status of the most recent renewal.
+         * @see https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW1
+         */
         $receiptInApp = empty($userReceipt['receipt']['in_app']) ? [] : $userReceipt['receipt']['in_app'];
         $purchasesLists = array_merge($latestReceiptInfo, $receiptInApp);
         
-        $latestReceiptData = $this->searchLatestPurchase($purchasesLists, $latestReceiptData);
+        $latestReceiptData = $this->searchLatestPurchase($purchasesLists);
 
         if (empty($latestReceiptData)) {
             return null;
@@ -186,24 +192,45 @@ class ReceiptService
     }
 
     /**
+     * Returns either the latest uncancelled purchase if it exists, or the latest purchase of any status.
+     *
      * @param array $purchasesList
-     * @param array $latestReceiptData
-     * @return array|mixed
+     * @return array|null
      */
-    private function searchLatestPurchase(array $purchasesList, array $latestReceiptData = [])
+    private function searchLatestPurchase(array $purchasesList)
     {
-        if (!empty($purchasesList)) {
-            // Loop in all the users receipt to get the latest receipt
-            foreach ($purchasesList as $key => $value) {
-                if (empty($latestReceiptData['purchase_date_ms']) || $latestReceiptData['purchase_date_ms'] < $value['purchase_date_ms']) {
-                    $latestReceiptData = $value;
-                }
-            }
-        } else {
-            $latestReceiptData = null;
+        if (empty($purchasesList)) {
+            return null;
         }
 
-        return $latestReceiptData;
+        usort($purchasesList, [$this, 'compareReceipts']);
+
+        return $purchasesList[0];
+    }
+
+    /**
+     * Returns 1 if $a should be ranked lower than $b, else -1.
+     * If one of $a or $b is cancelled use this as a criteria, else use purchase date
+     *
+     * @param array $a
+     * @param array $b
+     * @return int
+     */
+    private function compareReceipts(array $a, array $b)
+    {
+        if (isset($a['cancellation_date_ms']) && !isset($b['cancellation_date_ms'])) {
+            return 1;
+        } 
+        
+        if (isset($b['cancellation_date_ms']) && !isset($a['cancellation_date_ms'])) {
+            return -1;
+        } 
+        
+        if ($a['purchase_date_ms'] > $b['purchase_date_ms']) {
+            return -1;
+        }
+        
+        return 1;
     }
 
     /**

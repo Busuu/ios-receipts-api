@@ -109,4 +109,23 @@ class ReceiptServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('1450006697000', $result->getExpiresDateMs());
         $this->assertEquals('1447414697000', $result->getPurchaseDateMs());
     }
+
+    public function testGetLastPurchaseFromFullReceiptWithCancelledPurchase_shouldReturnLastUncancelledPurchaseAsAppStoreReceipt()
+    {
+        // GIVEN
+        $helper = new AppleHelper();
+        $fullReceipt = $helper->getStoreReceiptLatestSubscriptionIsCancelled();
+
+        // WHEN / THEN
+        $result = $this->receiptService->getLastPurchaseFromFullReceipt($fullReceipt);
+
+        $this->assertInstanceOf(AppStoreReceipt::class, $result);
+
+        //Checking for the latest receipt details as within $fullReceipt.
+        $this->assertEquals('com.busuu.app.subs12month.50_discount_sep_16', $result->getProductId());
+        $this->assertEquals('710000330793142', $result->getOriginalTransactionId());
+        $this->assertEquals('1568800595000', $result->getExpiresDateMs());
+        $this->assertEquals('1537264595000', $result->getPurchaseDateMs());
+        $this->assertNull($result->getCancellationDateMs());
+    }
 }
