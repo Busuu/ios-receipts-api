@@ -239,7 +239,7 @@ class ReceiptService
      * @param array $storePurchase
      * @return AppStoreReceipt|null
      */
-    private function createAppStoreReceipt(array $storePurchase)
+    public function createAppStoreReceipt(array $storePurchase)
     {
         if (empty($storePurchase)) {
             return null;
