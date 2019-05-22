@@ -19,6 +19,8 @@ class AppStoreReceipt
     private $expiresDatePst;
     private $webOrderLineItemId;
     private $isTrialPeriod;
+    private $promotionalOfferId;
+
     /**
      * @var int The cancellation date is set when Apple's customer service refunds the user purchase. In that case, consider that the purchase never happened.
      * There is no way to know if and when the user requested that their subscription should not renew at the end of the term, except from checking the expiration time afterwards.
@@ -310,6 +312,25 @@ class AppStoreReceipt
     public function setCancellationDateMs($cancellationDateMs)
     {
         $this->cancellationDateMs = $cancellationDateMs;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPromotionalOfferId()
+    {
+        return $this->promotionalOfferId;
+    }
+
+    /**
+     * @param string|null $promotionalOfferId
+     * @return AppStoreReceipt
+     */
+    public function setPromotionalOfferId($promotionalOfferId)
+    {
+        $this->promotionalOfferId = $promotionalOfferId;
+
         return $this;
     }
 
