@@ -257,6 +257,7 @@ class ReceiptService
         $expiresDate = !empty($storePurchase['expires_date']) ? $storePurchase['expires_date'] : null;
         $expiresDatePst = !empty($storePurchase['expires_date_pst']) ? $storePurchase['expires_date_pst'] : null;
         $expiresDateMs = !empty($storePurchase['expires_date_ms']) ? $storePurchase['expires_date_ms'] : null;
+        $promotionalOfferId = !empty($storePurchase['promotional_offer_id']) ? $storePurchase['promotional_offer_id'] : null;
 
         $receipt->setQuantity($storePurchase['quantity'])
             ->setProductId($storePurchase['product_id'])
@@ -274,6 +275,7 @@ class ReceiptService
             ->setWebOrderLineItemId($webOrderLineItemId)
             ->setIsTrialPeriod($storePurchase['is_trial_period'])
             ->setCancellationDateMs($cancellationTime)
+            ->setPromotionalOfferId($promotionalOfferId)
         ;
 
         return $receipt;
