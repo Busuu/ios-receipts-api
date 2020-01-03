@@ -19,7 +19,7 @@ class AppleClient
 
     /**
      * Fetch the receipt from apple
-     * 
+     *
      * @param $receiptData
      * @param $endpoint
      * @return array
@@ -36,7 +36,9 @@ class AppleClient
 
             return json_decode($response->getBody(), true);
         } catch (\Exception $e) {
-            throw new \InvalidArgumentException('Error in the communication with Apple');
+            throw new \InvalidArgumentException(
+                sprintf('Error in the communication with Apple - %s', $e->getMessage())
+            );
         }
     }
 }
