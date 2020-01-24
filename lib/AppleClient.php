@@ -2,6 +2,7 @@
 
 namespace Busuu\IosReceiptsApi;
 
+use Exception;
 use GuzzleHttp\Client;
 
 class AppleClient
@@ -22,23 +23,28 @@ class AppleClient
      *
      * @param $receiptData
      * @param $endpoint
+     *
      * @return array
+     * @throws Exception
      */
     public function fetchReceipt($receiptData, $endpoint)
     {
-        try {
-            $data = [
-                'password' => $this->password,
-                'receipt-data' => $receiptData
-            ];
+        $data = [
+            'password' => $this->password,
+            'receipt-data' => $receiptData
+        ];
 
-            $response = $this->client->post($endpoint, ['body' => json_encode($data)]);
+        $response = $this->client->post($endpoint, [
+            'body' => json_encode($data),
+            'timeout' => 10
+        ]);
 
-            return json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-            throw new \InvalidArgumentException(
-                sprintf('Error in the communication with Apple - %s', $e->getMessage())
-            );
+        $jsonResponse = json_decode($response->getBody(), true);
+
+        if (null !== $jsonResponse) {
+            return $jsonResponse;
         }
+
+        throw new Exception(sprintf('Invalid Response from Apple Server: %s', $response));
     }
 }
