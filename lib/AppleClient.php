@@ -45,6 +45,6 @@ class AppleClient
             return $jsonResponse;
         }
 
-        throw new Exception(sprintf('Invalid Response from Apple Server: %s', $response));
+        throw new Exception(sprintf('Invalid Response from Apple Server: %s', $response->getBody()));
     }
 }
