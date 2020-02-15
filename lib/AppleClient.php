@@ -36,7 +36,7 @@ class AppleClient
 
         $response = $this->client->post($endpoint, [
             'body' => json_encode($data),
-            'timeout' => 10
+            'timeout' => 20
         ]);
 
         $jsonResponse = json_decode($response->getBody(), true);
