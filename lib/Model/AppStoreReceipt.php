@@ -22,6 +22,14 @@ class AppStoreReceipt
     private $promotionalOfferId;
 
     /**
+     * An array of elements that refers to auto-renewable subscription renewals that are open or failed in the past.
+     * https://developer.apple.com/documentation/appstorereceipts/responsebody/pending_renewal_info
+     *
+     * @var array|null
+     */
+    private $pendingRenewalInfos;
+
+    /**
      * @var int The cancellation date is set when Apple's customer service refunds the user purchase. In that case, consider that the purchase never happened.
      * There is no way to know if and when the user requested that their subscription should not renew at the end of the term, except from checking the expiration time afterwards.
      */
@@ -330,6 +338,24 @@ class AppStoreReceipt
     public function setPromotionalOfferId($promotionalOfferId)
     {
         $this->promotionalOfferId = $promotionalOfferId;
+
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getPendingRenewalInfos(): ?array
+    {
+        return $this->pendingPromotionalOfferId;
+    }
+
+    /**
+     * @param array|null $pendingRenewalInfos
+     */
+    public function setPendingRenewalInfos(?array $pendingRenewalInfos): self
+    {
+        $this->pendingPromotionalOfferId = $pendingRenewalInfos;
 
         return $this;
     }
