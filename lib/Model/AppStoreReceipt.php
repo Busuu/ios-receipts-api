@@ -347,7 +347,7 @@ class AppStoreReceipt
      */
     public function getPendingRenewalInfos(): ?array
     {
-        return $this->pendingPromotionalOfferId;
+        return $this->pendingRenewalInfos;
     }
 
     /**
@@ -355,7 +355,7 @@ class AppStoreReceipt
      */
     public function setPendingRenewalInfos(?array $pendingRenewalInfos): self
     {
-        $this->pendingPromotionalOfferId = $pendingRenewalInfos;
+        $this->pendingRenewalInfos = $pendingRenewalInfos;
 
         return $this;
     }
