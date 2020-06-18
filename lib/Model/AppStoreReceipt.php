@@ -353,7 +353,7 @@ class AppStoreReceipt
     /**
      * @param array|null $pendingRenewalInfos
      */
-    public function setPendingRenewalInfos(?array $pendingRenewalInfos): self
+    public function setPendingRenewalInfos(array $pendingRenewalInfos = null): self
     {
         $this->pendingRenewalInfos = $pendingRenewalInfos;
 
