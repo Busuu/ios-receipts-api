@@ -169,20 +169,24 @@ class ReceiptService
          * @see https://developer.apple.com/library/archive/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW1
          */
         $receiptInApp = empty($userReceipt['receipt']['in_app']) ? [] : $userReceipt['receipt']['in_app'];
+        $pendingRenewalInfo = empty($userReceipt['pending_renewal_info']) ? [] : $userReceipt['pending_renewal_info'];
+
         $purchasesLists = array_merge($latestReceiptInfo, $receiptInApp);
-        
+
         $latestReceiptData = $this->searchLatestPurchase($purchasesLists);
 
         if (empty($latestReceiptData)) {
             return null;
         }
 
+        $latestReceiptData['pending_renewal_info'] = $pendingRenewalInfo;
+
         return $this->createAppStoreReceipt($latestReceiptData);
     }
 
     /**
      * check if the user cancel the subscription
-     * 
+     *
      * @param AppStoreReceipt $receipt
      * @return bool
      */
@@ -220,16 +224,16 @@ class ReceiptService
     {
         if (isset($a['cancellation_date_ms']) && !isset($b['cancellation_date_ms'])) {
             return 1;
-        } 
-        
+        }
+
         if (isset($b['cancellation_date_ms']) && !isset($a['cancellation_date_ms'])) {
             return -1;
-        } 
-        
+        }
+
         if ($a['purchase_date_ms'] > $b['purchase_date_ms']) {
             return -1;
         }
-        
+
         return 1;
     }
 
@@ -258,6 +262,7 @@ class ReceiptService
         $expiresDatePst = !empty($storePurchase['expires_date_pst']) ? $storePurchase['expires_date_pst'] : null;
         $expiresDateMs = !empty($storePurchase['expires_date_ms']) ? $storePurchase['expires_date_ms'] : null;
         $promotionalOfferId = !empty($storePurchase['promotional_offer_id']) ? $storePurchase['promotional_offer_id'] : null;
+        $pendingRenewalInfos = !empty($storePurchase['pending_renewal_info']) ? $storePurchase['pending_renewal_info']: null;
 
         $receipt->setQuantity($storePurchase['quantity'])
             ->setProductId($storePurchase['product_id'])
@@ -276,6 +281,7 @@ class ReceiptService
             ->setIsTrialPeriod($storePurchase['is_trial_period'])
             ->setCancellationDateMs($cancellationTime)
             ->setPromotionalOfferId($promotionalOfferId)
+            ->setPendingRenewalInfos($pendingRenewalInfos)
         ;
 
         return $receipt;
