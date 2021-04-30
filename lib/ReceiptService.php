@@ -171,6 +171,23 @@ class ReceiptService
         $receiptInApp = empty($userReceipt['receipt']['in_app']) ? [] : $userReceipt['receipt']['in_app'];
         $pendingRenewalInfo = empty($userReceipt['pending_renewal_info']) ? [] : $userReceipt['pending_renewal_info'];
 
+
+        // GROWTH-1133: last receipt since 10th of March 2021 is an array with multiple receipts, so now adjusting it
+        // so now setting it to a singular receipt which can be used for the array_merge below with in_app and last_receipt_info
+        if (!empty($latestReceiptInfo) && is_array($latestReceiptInfo)) {
+            if (
+                !(
+                    array_key_exists('product_id', $latestReceiptInfo)
+                    || array_key_exists('original_purchase_date_pst', $latestReceiptInfo)
+                    || array_key_exists('web_order_line_item_id', $latestReceiptInfo)
+                )
+            ) {
+                $numberOfLastReceipts = count($latestReceiptInfo);
+                $latestReceiptInfo = $latestReceiptInfo[$numberOfLastReceipts - 1];
+            }
+        }
+
+
         $purchasesLists = array_merge($latestReceiptInfo, $receiptInApp);
 
         $latestReceiptData = $this->searchLatestPurchase($purchasesLists);
