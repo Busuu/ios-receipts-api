@@ -41,7 +41,7 @@ class ValidatorService
      * We will treat it as a receipt server error
      * https://forums.developer.apple.com/thread/42678
      */
-    const RECEIPT_SERVER_UNKOWN_ERROR_CODE = 21009;
+    const RECEIPT_SERVER_UNKNOWN_ERROR_CODE = 21009;
     /*
      * This receipt is valid but the subscription has expired. When this status code is returned to your server, the receipt data is also decoded and returned as part of the response.
      * Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
@@ -65,11 +65,12 @@ class ValidatorService
     const SUCCESS_VALIDATION_RESPONSE = 1;
 
     /**
-     * @param $receiptInfo
+     * @param array $receiptInfo
      * @return int
-     * @throws \Exception
+     * @throws InvalidReceiptException
+     * @throws UnauthorizedReceiptException
      */
-    public function validateReceipt(array $receiptInfo)
+    public function validateReceipt(array $receiptInfo): int
     {
         // Status is the only mandatory field
         if (!isset($receiptInfo['status'])) {
@@ -88,27 +89,37 @@ class ValidatorService
                 $return = self::SUCCESS_VALIDATION_RESPONSE;
                 break;
             case self::UNAUTHORIZED_RECEIPT:
-                throw new UnauthorizedReceiptException('This receipt could not be authorized. Treat this the same as if a purchase was never made.', $receiptInfo['status']);
-                break;
+                throw new UnauthorizedReceiptException(
+                    'This receipt could not be authorized. Treat this the same as if a purchase was never made.',
+                    $receiptInfo['status']
+                );
             case self::INVALID_REQUEST_JSON_ERROR_CODE:
-                throw new InvalidReceiptException('The App Store could not read the JSON object you provided.', $receiptInfo['status']);
-                break;
+                throw new InvalidReceiptException(
+                    'The App Store could not read the JSON object you provided.',
+                    $receiptInfo['status']
+                );
             case self::MALFORMED_RECEIPT_DATA_ERROR_CODE:
-                throw new InvalidReceiptException('The data in the receipt-data property was malformed or missing.', $receiptInfo['status']);
-                break;
+                throw new InvalidReceiptException(
+                    'The data in the receipt-data property was malformed or missing.',
+                    $receiptInfo['status']
+                );
             case self::RECEIPT_NOT_AUTHENTICATE_ERROR_CODE:
                 throw new InvalidReceiptException('The receipt could not be authenticated.', $receiptInfo['status']);
-                break;
             case self::INVALID_CREDENTIALS_ERROR_CODE:
-                throw new InvalidReceiptException('The shared secret you provided does not match the shared secret on file for your account.', $receiptInfo['status']);
-                break;
+                throw new InvalidReceiptException(
+                    'The shared secret you provided does not match the shared secret on file for your account.',
+                    $receiptInfo['status']
+                );
             case self::RECEIPT_SERVER_DOWN_ERROR_CODE:
-            case self::RECEIPT_SERVER_UNKOWN_ERROR_CODE:
-                throw new InvalidReceiptException('The receipt server is not currently available.', $receiptInfo['status']);
-                break;
+            case self::RECEIPT_SERVER_UNKNOWN_ERROR_CODE:
+                throw new InvalidReceiptException(
+                    'The receipt server is not currently available.',
+                    $receiptInfo['status']
+                );
             default:
-                throw new InvalidReceiptException('The receipt does not contain a valid status.', $receiptInfo['status']);
-                break;
+                throw new InvalidReceiptException(
+                    'The receipt does not contain a valid status.', $receiptInfo['status']
+                );
         }
 
         return $return;

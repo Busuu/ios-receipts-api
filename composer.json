@@ -4,6 +4,7 @@
   "type": "project",
   "require": {
     "php": ">=7.4",
+    "ext-json": "*",
     "guzzlehttp/guzzle": "^7.0"
   },
   "autoload": {

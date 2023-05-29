@@ -27,13 +27,13 @@ class AppStoreReceipt
      *
      * @var array|null
      */
-    private $pendingRenewalInfos;
+    private ?array $pendingRenewalInfos;
 
     /**
      * @var int The cancellation date is set when Apple's customer service refunds the user purchase. In that case, consider that the purchase never happened.
-     * There is no way to know if and when the user requested that their subscription should not renew at the end of the term, except from checking the expiration time afterwards.
+     * There is no way to know if and when the user requested that their subscription should not renew at the end of the term, except from checking the expiration time afterward.
      */
-    private $cancellationDateMs;
+    private int $cancellationDateMs;
 
     /**
      * @return mixed
@@ -47,7 +47,7 @@ class AppStoreReceipt
      * @param mixed $quantity
      * @return $this
      */
-    public function setQuantity($quantity)
+    public function setQuantity($quantity): AppStoreReceipt
     {
         $this->quantity = $quantity;
         return $this;
@@ -65,7 +65,7 @@ class AppStoreReceipt
      * @param mixed $productId
      * @return $this
      */
-    public function setProductId($productId)
+    public function setProductId($productId): AppStoreReceipt
     {
         $this->productId = $productId;
         return $this;
@@ -83,7 +83,7 @@ class AppStoreReceipt
      * @param mixed $transactionId
      * @return $this
      */
-    public function setTransactionId($transactionId)
+    public function setTransactionId($transactionId): AppStoreReceipt
     {
         $this->transactionId = $transactionId;
         return $this;
@@ -101,7 +101,7 @@ class AppStoreReceipt
      * @param mixed $originalTransactionId
      * @return $this
      */
-    public function setOriginalTransactionId($originalTransactionId)
+    public function setOriginalTransactionId($originalTransactionId): AppStoreReceipt
     {
         $this->originalTransactionId = $originalTransactionId;
         return $this;
@@ -119,7 +119,7 @@ class AppStoreReceipt
      * @param mixed $purchaseDate
      * @return $this
      */
-    public function setPurchaseDate($purchaseDate)
+    public function setPurchaseDate($purchaseDate): AppStoreReceipt
     {
         $this->purchaseDate = $purchaseDate;
         return $this;
@@ -137,7 +137,7 @@ class AppStoreReceipt
      * @param mixed $purchaseDateMs
      * @return $this
      */
-    public function setPurchaseDateMs($purchaseDateMs)
+    public function setPurchaseDateMs($purchaseDateMs): AppStoreReceipt
     {
         $this->purchaseDateMs = $purchaseDateMs;
         return $this;
@@ -155,7 +155,7 @@ class AppStoreReceipt
      * @param mixed $purchaseDatePst
      * @return $this
      */
-    public function setPurchaseDatePst($purchaseDatePst)
+    public function setPurchaseDatePst($purchaseDatePst): AppStoreReceipt
     {
         $this->purchaseDatePst = $purchaseDatePst;
         return $this;
@@ -173,7 +173,7 @@ class AppStoreReceipt
      * @param mixed $originalPurchaseDate
      * @return $this
      */
-    public function setOriginalPurchaseDate($originalPurchaseDate)
+    public function setOriginalPurchaseDate($originalPurchaseDate): AppStoreReceipt
     {
         $this->originalPurchaseDate = $originalPurchaseDate;
         return $this;
@@ -191,7 +191,7 @@ class AppStoreReceipt
      * @param mixed $originalPurchaseDateMs
      * @return $this
      */
-    public function setOriginalPurchaseDateMs($originalPurchaseDateMs)
+    public function setOriginalPurchaseDateMs($originalPurchaseDateMs): AppStoreReceipt
     {
         $this->originalPurchaseDateMs = $originalPurchaseDateMs;
         return $this;
@@ -209,7 +209,7 @@ class AppStoreReceipt
      * @param mixed $originalPurchaseDatePst
      * @return $this
      */
-    public function setOriginalPurchaseDatePst($originalPurchaseDatePst)
+    public function setOriginalPurchaseDatePst($originalPurchaseDatePst): AppStoreReceipt
     {
         $this->originalPurchaseDatePst = $originalPurchaseDatePst;
         return $this;
@@ -227,7 +227,7 @@ class AppStoreReceipt
      * @param mixed $expiresDate
      * @return $this
      */
-    public function setExpiresDate($expiresDate)
+    public function setExpiresDate($expiresDate): AppStoreReceipt
     {
         $this->expiresDate = $expiresDate;
         return $this;
@@ -245,7 +245,7 @@ class AppStoreReceipt
      * @param mixed $expiresDateMs
      * @return $this
      */
-    public function setExpiresDateMs($expiresDateMs)
+    public function setExpiresDateMs($expiresDateMs): AppStoreReceipt
     {
         $this->expiresDateMs = $expiresDateMs;
         return $this;
@@ -263,7 +263,7 @@ class AppStoreReceipt
      * @param mixed $expiresDatePst
      * @return $this
      */
-    public function setExpiresDatePst($expiresDatePst)
+    public function setExpiresDatePst($expiresDatePst): AppStoreReceipt
     {
         $this->expiresDatePst = $expiresDatePst;
         return $this;
@@ -281,7 +281,7 @@ class AppStoreReceipt
      * @param mixed $webOrderLineItemId
      * @return $this
      */
-    public function setWebOrderLineItemId($webOrderLineItemId)
+    public function setWebOrderLineItemId($webOrderLineItemId): AppStoreReceipt
     {
         $this->webOrderLineItemId = $webOrderLineItemId;
         return $this;
@@ -299,16 +299,16 @@ class AppStoreReceipt
      * @param mixed $isTrialPeriod
      * @return $this
      */
-    public function setIsTrialPeriod($isTrialPeriod)
+    public function setIsTrialPeriod($isTrialPeriod): AppStoreReceipt
     {
         $this->isTrialPeriod = $isTrialPeriod;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getCancellationDateMs()
+    public function getCancellationDateMs(): ?int
     {
         return $this->cancellationDateMs;
     }
@@ -317,7 +317,7 @@ class AppStoreReceipt
      * @param mixed $cancellationDateMs
      * @return $this
      */
-    public function setCancellationDateMs($cancellationDateMs)
+    public function setCancellationDateMs($cancellationDateMs): AppStoreReceipt
     {
         $this->cancellationDateMs = $cancellationDateMs;
         return $this;
@@ -326,7 +326,7 @@ class AppStoreReceipt
     /**
      * @return string|null
      */
-    public function getPromotionalOfferId()
+    public function getPromotionalOfferId(): ?string
     {
         return $this->promotionalOfferId;
     }
@@ -335,7 +335,7 @@ class AppStoreReceipt
      * @param string|null $promotionalOfferId
      * @return AppStoreReceipt
      */
-    public function setPromotionalOfferId($promotionalOfferId)
+    public function setPromotionalOfferId(?string $promotionalOfferId): AppStoreReceipt
     {
         $this->promotionalOfferId = $promotionalOfferId;
 
@@ -353,14 +353,14 @@ class AppStoreReceipt
     /**
      * @param array|null $pendingRenewalInfos
      */
-    public function setPendingRenewalInfos(array $pendingRenewalInfos = null): self
+    public function setPendingRenewalInfos(array $pendingRenewalInfos = null): AppStoreReceipt
     {
         $this->pendingRenewalInfos = $pendingRenewalInfos;
 
         return $this;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'quantity' => $this->getQuantity(),
