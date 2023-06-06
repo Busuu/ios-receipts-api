@@ -16,11 +16,5 @@
     "psr-4": {
       "Tests\\Helper\\": "tests/Helper/"
     }
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/additio/ios-receipts-api"
-    }
-  ]
+  }
 }
