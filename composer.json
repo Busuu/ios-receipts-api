@@ -1,5 +1,5 @@
 {
-  "name": "busuu/ios-receipts-api",
+  "name": "additio/ios-receipts-api",
   "license": "MIT",
   "type": "project",
   "require": {
@@ -8,9 +8,19 @@
     "guzzlehttp/guzzle": "^7.0"
   },
   "autoload": {
-    "psr-4": { "Busuu\\IosReceiptsApi\\": "lib/" }
+    "psr-4": {
+      "Busuu\\IosReceiptsApi\\": "lib/"
+    }
   },
   "autoload-dev": {
-    "psr-4": { "Tests\\Helper\\": "tests/Helper/" }
-  }
+    "psr-4": {
+      "Tests\\Helper\\": "tests/Helper/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/additio/ios-receipts-api"
+    }
+  ]
 }
