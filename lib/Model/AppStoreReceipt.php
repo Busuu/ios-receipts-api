@@ -30,10 +30,10 @@ class AppStoreReceipt
     private ?array $pendingRenewalInfos;
 
     /**
-     * @var int The cancellation date is set when Apple's customer service refunds the user purchase. In that case, consider that the purchase never happened.
+     * @var int|null The cancellation date is set when Apple's customer service refunds the user purchase. In that case, consider that the purchase never happened.
      * There is no way to know if and when the user requested that their subscription should not renew at the end of the term, except from checking the expiration time afterward.
      */
-    private int $cancellationDateMs;
+    private ?int $cancellationDateMs;
 
     /**
      * @return mixed
