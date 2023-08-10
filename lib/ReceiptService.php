@@ -15,14 +15,14 @@ class ReceiptService
     private string $environment;
     private string $productionEndpoint = 'https://buy.itunes.apple.com/verifyReceipt';
     private string $sandboxEndpoint = 'https://sandbox.itunes.apple.com/verifyReceipt';
-    /** @var  AppleClient $appleClient */
+    /** @var AppleClient $appleClient */
     private AppleClient $appleClient;
-    /** @var  ValidatorService $validatorService */
+    /** @var ValidatorService $validatorService */
     private ValidatorService $validatorService;
-    /** @var  string base64-encoded receipt data */
+    /** @var string base64-encoded receipt data */
     private string $receiptData;
-    /** @var array raw receipt received from the App store */
-    private array $receipt;
+    /** @var array|null raw receipt received from the App store */
+    private ?array $receipt = null;
 
     /**
      * ReceiptService constructor.
@@ -56,8 +56,8 @@ class ReceiptService
      */
     public function getFullReceipt(): array
     {
-        if (!$this->receipt) {
-            $this->receipt =  $this->getReceipt();
+        if (is_null($this->receipt)) {
+            $this->receipt = $this->getReceipt();
         }
 
         return $this->receipt;
@@ -71,8 +71,8 @@ class ReceiptService
      */
     public function getLastPurchase(): ?AppStoreReceipt
     {
-        if (!$this->receipt) {
-            $this->receipt =  $this->getReceipt();
+        if (is_null($this->receipt)) {
+            $this->receipt = $this->getReceipt();
         }
 
         return $this->filterLastReceipt($this->receipt);
