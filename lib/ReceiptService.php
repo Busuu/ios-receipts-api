@@ -3,23 +3,26 @@
 namespace Busuu\IosReceiptsApi;
 
 use Busuu\IosReceiptsApi\Model\AppStoreReceipt;
+use Exception;
+use GuzzleHttp\Exception\GuzzleException;
+use InvalidArgumentException;
 
 class ReceiptService
 {
     const PRODUCTION_ENVIRONMENT = 'production';
     const SANDBOX_ENVIRONMENT = 'sandbox';
 
-    private $environment;
-    private $productionEndpoint = 'https://buy.itunes.apple.com/verifyReceipt';
-    private $sandboxEndpoint = 'https://sandbox.itunes.apple.com/verifyReceipt';
-    /** @var  AppleClient $appleClient */
-    private $appleClient;
-    /** @var  ValidatorService $validatorService */
-    private $validatorService;
-    /** @var  string base64-encoded receipt data */
-    private $receiptData;
-    /** @var array raw receipt received from the App store */
-    private $receipt;
+    private string $environment;
+    private string $productionEndpoint = 'https://buy.itunes.apple.com/verifyReceipt';
+    private string $sandboxEndpoint = 'https://sandbox.itunes.apple.com/verifyReceipt';
+    /** @var AppleClient $appleClient */
+    private AppleClient $appleClient;
+    /** @var ValidatorService $validatorService */
+    private ValidatorService $validatorService;
+    /** @var string base64-encoded receipt data */
+    private string $receiptData;
+    /** @var array|null raw receipt received from the App store */
+    private ?array $receipt = null;
 
     /**
      * ReceiptService constructor.
@@ -27,7 +30,7 @@ class ReceiptService
      * @param ValidatorService $validatorService
      * @param string $environment
      */
-    public function __construct(AppleClient $appleClient, ValidatorService $validatorService, $environment = self::PRODUCTION_ENVIRONMENT)
+    public function __construct(AppleClient $appleClient, ValidatorService $validatorService, string $environment = self::PRODUCTION_ENVIRONMENT)
     {
         $this->appleClient = $appleClient;
         $this->validatorService = $validatorService;
@@ -38,7 +41,7 @@ class ReceiptService
      * @param string $receiptData
      * @return self
      */
-    public function setReceiptData($receiptData)
+    public function setReceiptData(string $receiptData): ReceiptService
     {
         $this->receiptData = $receiptData;
 
@@ -49,11 +52,12 @@ class ReceiptService
      * Get array containing the full response from the App store
      *
      * @return array
+     * @throws Exception|GuzzleException
      */
-    public function getFullReceipt()
+    public function getFullReceipt(): array
     {
-        if (!$this->receipt) {
-            $this->receipt =  $this->getReceipt();
+        if (is_null($this->receipt)) {
+            $this->receipt = $this->getReceipt();
         }
 
         return $this->receipt;
@@ -63,12 +67,12 @@ class ReceiptService
      * Get AppStoreReceipt object with the last purchase made for the user
      *
      * @return AppStoreReceipt|null
-     * @throws \Exception
+     * @throws Exception|GuzzleException
      */
-    public function getLastPurchase()
+    public function getLastPurchase(): ?AppStoreReceipt
     {
-        if (!$this->receipt) {
-            $this->receipt =  $this->getReceipt();
+        if (is_null($this->receipt)) {
+            $this->receipt = $this->getReceipt();
         }
 
         return $this->filterLastReceipt($this->receipt);
@@ -81,7 +85,7 @@ class ReceiptService
      *
      * @return AppStoreReceipt|null
      */
-    public function getLastPurchaseFromFullReceipt(array $fullReceipt)
+    public function getLastPurchaseFromFullReceipt(array $fullReceipt): ?AppStoreReceipt
     {
         return $this->filterLastReceipt($fullReceipt);
     }
@@ -91,14 +95,14 @@ class ReceiptService
      *
      * @return string
      */
-    private function getAppleEndpoint()
+    private function getAppleEndpoint(): string
     {
         if ($this->environment === self::PRODUCTION_ENVIRONMENT) {
             $endpoint = $this->productionEndpoint;
         } elseif ($this->environment === self::SANDBOX_ENVIRONMENT) {
             $endpoint = $this->sandboxEndpoint;
         } else {
-            throw new \InvalidArgumentException('Invalid environment');
+            throw new InvalidArgumentException('Invalid environment');
         }
 
         return $endpoint;
@@ -107,12 +111,12 @@ class ReceiptService
     /**
      * Get receipt data from store
      * @return array
-     * @throws \Exception
+     * @throws Exception|GuzzleException
      */
-    private function getReceipt()
+    private function getReceipt(): array
     {
         if (!$this->receiptData) {
-            throw new \Exception('Receipt data not initialized on receipt service');
+            throw new Exception('Receipt data not initialized on receipt service');
         }
 
         // Fetch the receipt from production store
@@ -121,7 +125,7 @@ class ReceiptService
         $status = $this->validatorService->validateReceipt($result);
 
         /**
-         * As per Apple's advice, receipts should be first send to production environment, and if the "sandbox" response code is received, they should then sent to sandbox.
+         * As per Apple's advice, receipts should be first send to production environment, and if the "sandbox" response code is received, they should then send to sandbox.
          * This means that no configuration change is necessary for working in either environment.
          */
         if ($status === ValidatorService::SANDBOX_REQUEST_RESPONSE) {
@@ -148,7 +152,7 @@ class ReceiptService
      * @param array $userReceipt
      * @return AppStoreReceipt|null
      */
-    private function filterLastReceipt(array $userReceipt)
+    private function filterLastReceipt(array $userReceipt): ?AppStoreReceipt
     {
         // The user does not have any purchase
         if (empty($userReceipt['receipt']['in_app']) && empty($userReceipt['latest_receipt_info'])) {
@@ -190,9 +194,9 @@ class ReceiptService
      * @param AppStoreReceipt $receipt
      * @return bool
      */
-    public function isCancelled(AppStoreReceipt $receipt)
+    public function isCancelled(AppStoreReceipt $receipt): bool
     {
-        return !empty($receipt->getCancellationDateMs()) ? true : false;
+        return !empty($receipt->getCancellationDateMs());
     }
 
     /**
@@ -201,7 +205,7 @@ class ReceiptService
      * @param array $purchasesList
      * @return array|null
      */
-    private function searchLatestPurchase(array $purchasesList)
+    private function searchLatestPurchase(array $purchasesList): ?array
     {
         if (empty($purchasesList)) {
             return null;
@@ -220,7 +224,7 @@ class ReceiptService
      * @param array $b
      * @return int
      */
-    private function compareReceipts(array $a, array $b)
+    private function compareReceipts(array $a, array $b): int
     {
         if (isset($a['cancellation_date_ms']) && !isset($b['cancellation_date_ms'])) {
             return 1;
@@ -243,7 +247,7 @@ class ReceiptService
      * @param array $storePurchase
      * @return AppStoreReceipt|null
      */
-    public function createAppStoreReceipt(array $storePurchase)
+    public function createAppStoreReceipt(array $storePurchase): ?AppStoreReceipt
     {
         if (empty($storePurchase)) {
             return null;
@@ -253,9 +257,9 @@ class ReceiptService
 
         // web_order_line_item_id key is defined as mandatory by apple documentation but sometime is not returned.
         $webOrderLineItemId = !empty($storePurchase['web_order_line_item_id']) ? $storePurchase['web_order_line_item_id'] : null;
-        // cancellation_date_ms is returned just if the user cancel the subscription an was refund immediately
+        // cancellation_date_ms is returned just if the user cancel the subscription and was refund immediately
         $cancellationTime = !empty($storePurchase['cancellation_date_ms']) ? $storePurchase['cancellation_date_ms'] : null;
-        // purchase_date_pst just discovered that some times isn't coming either
+        // purchase_date_pst just discovered that sometimes isn't coming either
         $purchaseDatePst = !empty($storePurchase['purchase_date_pst']) ? $storePurchase['purchase_date_pst'] : null;
         // expires_at, expires_date_pst + expires_date_ms not always present (older purchases)
         $expiresDate = !empty($storePurchase['expires_date']) ? $storePurchase['expires_date'] : null;

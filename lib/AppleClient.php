@@ -4,13 +4,14 @@ namespace Busuu\IosReceiptsApi;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class AppleClient
 {
     /** @var  Client $client */
-    private $client;
+    private Client $client;
     /** @var  string */
-    private $password;
+    private string $password;
 
     public function __construct($password)
     {
@@ -25,9 +26,9 @@ class AppleClient
      * @param $endpoint
      *
      * @return array
-     * @throws Exception
+     * @throws Exception|GuzzleException
      */
-    public function fetchReceipt($receiptData, $endpoint)
+    public function fetchReceipt($receiptData, $endpoint): array
     {
         $data = [
             'password' => $this->password,
